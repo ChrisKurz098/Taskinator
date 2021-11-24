@@ -17,7 +17,7 @@
         </p>
         <form id="task-form">
             <div class="form-group">
-                <input type="text" name="task-name" placeholder="Enter Tast Name"/>
+                <input type="text" name="task-name" placeholder="Enter Tast Name" />
             </div>
             <div class="form-group">
                 <select name=task-type class="select-dropdown">
@@ -34,12 +34,23 @@
 
     </header>
 
-    <main class='page-content'>
+    <main class='page-content'id="page-content">
         <section class='task-list-wrapper'>
             <h2 class='list-title'>Tasks To Do</h2>
             <ul class='task-list' id='tasks-to-do'>
-                <li class='task-item'> A task is going to be added soon</li>
+
             </ul>
+        </section>
+        <!-- Tasks In Progress -->
+        <section class="task-list-wrapper">
+            <h2 class="list-title">Tasks In Progress</h2>
+            <ul class="task-list" id="tasks-in-progress"></ul>
+        </section>
+
+        <!-- Tasks Completed -->
+        <section class="task-list-wrapper">
+            <h2 class="list-title">Tasks Completed</h2>
+            <ul class="task-list" id="tasks-completed"></ul>
         </section>
     </main>
 
