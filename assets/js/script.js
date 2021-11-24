@@ -1,7 +1,10 @@
 let formEl = document.querySelector("#task-form");
-let tasksToDoEl = document.querySelector("#tasks-to-do");
+
 var taskIdCounter = 0;
 var pageContentEl = document.querySelector("#page-content");
+let tasksToDoEl = document.querySelector("#tasks-to-do");
+var tasksInProgressEl = document.querySelector("#tasks-in-progress");
+var tasksCompletedEl = document.querySelector("#tasks-completed");
 
 function taskFormHandler(event) {
     event.preventDefault();
@@ -14,14 +17,20 @@ function taskFormHandler(event) {
         return false;
     }
     formEl.reset();//resets the input values
-    // package up data as an object
-    let taskDataObj = {
-        name: taskNameInput,
-        type: taskTypeInput
-    };
 
-    // send it as an argument to createTaskEl 
-    createTaskEl(taskDataObj);
+    let isEdit = formEl.hasAttribute("data-task-id");
+    if (isEdit) {
+        let taskId = formEl.getAttribute("data-task-id");
+        completeEditTask(taskNameInput, taskTypeInput, taskId);
+    }
+    else {
+        let taskDataObj = {
+            name: taskNameInput,
+            type: taskTypeInput
+        }
+        // send it as an argument to createTaskEl 
+        createTaskEl(taskDataObj);
+    }
 
 }
 
@@ -93,6 +102,8 @@ var createTaskActions = function (taskId) {
 
 //Task Handler Function//
 function taskButtonHandler(event) {
+
+
     if (event.target.matches(".delete-btn")) {
         var taskId = event.target.getAttribute("data-task-id");
         deleteTask(taskId);
@@ -102,6 +113,8 @@ function taskButtonHandler(event) {
         var taskId = event.target.getAttribute("data-task-id");
         editTask(taskId);
     }
+
+
 };
 
 //Edit Task Function//
@@ -115,7 +128,7 @@ function editTask(taskId) {
 
     document.querySelector("input[name='task-name']").value = taskName;
     document.querySelector("select[name='task-type']").value = taskType;
-    document.querySelector("#save-task").textContent = "Save Task"; 
+    document.querySelector("#save-task").textContent = "Save Task";
     formEl.setAttribute("data-task-id", taskId);
 }
 
@@ -127,6 +140,42 @@ function deleteTask(taskId) {
 
 }
 
+function completeEditTask(taskName, taskType, taskId) {
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    taskSelected.querySelector("h3.task-name").textContent = taskName;
+    taskSelected.querySelector("span.task-type").textContent = taskType;
+
+    alert("Task Updated");
+
+    //remove data attribute as it signifies if we are in edit mpe or not
+    formEl.removeAttribute("data-task-id");
+
+    //change the button name back to add task
+    document.querySelector("#save-task").textContent = "Add Task";
+
+}
+
+function taskStatusChangeHandler(event) {
+    let taskId = event.target.getAttribute("data-task-id");
+    let statusValue = event.target.value.toLowerCase();
+
+    let taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    if (statusValue === "to do"){
+        tasksToDoEl.appendChild(taskSelected);
+    }
+    else if (statusValue === "in progress"){
+        tasksInProgressEl.appendChild(taskSelected);
+    }
+    else if (statusValue === "completed"){
+        tasksCompletedEl.appendChild(taskSelected);
+    }
+}
+
 formEl.addEventListener('submit', taskFormHandler);
 
 pageContentEl.addEventListener("click", taskButtonHandler);
+
+//check if something is changed. we are looking for the select option to change on any of the li elements
+pageContentEl.addEventListener("change", taskStatusChangeHandler);
